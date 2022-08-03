@@ -4,10 +4,105 @@ const axios = require ('axios');
 const cheerio = require('cheerio');
 
 
+
+const popularGamesCssSelectors = [{
+	"name" : "div.contain_out:nth-child(4) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > ul:nth-child(1) > li:nth-child(2) > div:nth-child(2) > h3:nth-child(1) > a:nth-child(1)",
+	"image" : "div.contain_out:nth-child(4) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > ul:nth-child(1) > li:nth-child(2) > div:nth-child(1) > a:nth-child(1) > img:nth-child(1)",
+	"mainStoryTime" : "div.contain_out:nth-child(4) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > ul:nth-child(1) > li:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > div:nth-child(2)",
+	"mainPlusExtraTime" : "div.contain_out:nth-child(4) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > ul:nth-child(1) > li:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > div:nth-child(4)",
+	"completionistTime" : "div.contain_out:nth-child(4) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > ul:nth-child(1) > li:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > div:nth-child(6)",
+
+},
+{
+	"name" : "div.contain_out:nth-child(4) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > ul:nth-child(1) > li:nth-child(3) > div:nth-child(2) > h3:nth-child(1) > a:nth-child(1)",
+	"image" : "div.contain_out:nth-child(4) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > ul:nth-child(1) > li:nth-child(3) > div:nth-child(1) > a:nth-child(1) > img:nth-child(1)",
+	"mainStoryTime" : "div.contain_out:nth-child(4) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > ul:nth-child(1) > li:nth-child(3) > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > div:nth-child(2)",
+	"mainPlusExtraTime" : "div.contain_out:nth-child(4) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > ul:nth-child(1) > li:nth-child(3) > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > div:nth-child(4)",
+	"completionistTime" : "div.contain_out:nth-child(4) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > ul:nth-child(1) > li:nth-child(3) > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > div:nth-child(6)",
+
+},{
+	"name" : "li.back_darkish:nth-child(5) > div:nth-child(2) > h3:nth-child(1) > a:nth-child(1)",
+	"image" : "li.back_darkish:nth-child(5) > div:nth-child(1) > a:nth-child(1) > img:nth-child(1)",
+	"mainStoryTime" : "li.back_darkish:nth-child(5) > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > div:nth-child(2)",
+	"mainPlusExtraTime" : "li.back_darkish:nth-child(5) > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > div:nth-child(4)",
+	"completionistTime" : "li.back_darkish:nth-child(6) > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > div:nth-child(6)",
+
+},{
+	"name" : "li.back_darkish:nth-child(6) > div:nth-child(2) > h3:nth-child(1) > a:nth-child(1)",
+	"image" : "li.back_darkish:nth-child(6) > div:nth-child(1) > a:nth-child(1) > img:nth-child(1)",
+	"mainStoryTime" : "li.back_darkish:nth-child(6) > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > div:nth-child(2)",
+	"mainPlusExtraTime" : "li.back_darkish:nth-child(6) > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > div:nth-child(4)",
+	"completionistTime" : "li.back_darkish:nth-child(6) > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > div:nth-child(6)",
+
+},{
+	"name" : "li.back_darkish:nth-child(8) > div:nth-child(2) > h3:nth-child(1) > a:nth-child(1)",
+	"image" : "li.back_darkish:nth-child(8) > div:nth-child(1) > a:nth-child(1) > img:nth-child(1)",
+	"mainStoryTime" : "li.back_darkish:nth-child(8) > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > div:nth-child(2)",
+	"mainPlusExtraTime" : "div.time_50:nth-child(4)",
+	"completionistTime" : ".time_00",
+
+},{
+	"name" : "li.back_darkish:nth-child(9) > div:nth-child(2) > h3:nth-child(1) > a:nth-child(1)",
+	"image" : "li.back_darkish:nth-child(9) > div:nth-child(1) > a:nth-child(1) > img:nth-child(1)",
+	"mainStoryTime" : "li.back_darkish:nth-child(9) > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > div:nth-child(2)",
+	"mainPlusExtraTime" : "li.back_darkish:nth-child(9) > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > div:nth-child(4)",
+	"completionistTime" : "li.back_darkish:nth-child(9) > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > div:nth-child(6)",
+
+}];
+
+
+
 let app = express();
 
 
 let  hltbService = new hltb.HowLongToBeatService();
+
+app.get('/popularGames', async function(req,res){
+	try{
+	// let URL_R = 'https://www.metacritic.com/game' + '/' + platform + '/' + gameName;
+    const URL_R = 'https://howlongtobeat.com/';
+	// console.log(URL_R);
+	let result =[];
+
+ await axios(URL_R).then((res)=>{
+         const html = res.data;
+		const $ = cheerio.load(html);   
+        for (i =0 ;i< 6;i++){
+            var intRes = {};
+
+            const image = $(popularGamesCssSelectors
+            [i]['image']).attr('src');
+            const name = $(popularGamesCssSelectors
+            [i]['name']).html();
+            const mainStoryTime = $(popularGamesCssSelectors
+            [i]['mainStoryTime']).html();
+            const mainPlusExtraTime = $(popularGamesCssSelectors
+            [i]['mainPlusExtraTime']).html();
+            const completionistTime = $(popularGamesCssSelectors
+            [i]['completionistTime']).html();
+            intRes.image = image;
+            intRes.name = name;
+            intRes.mainStoryTime = mainStoryTime;
+            intRes.mainPlusExtraTime = mainPlusExtraTime;
+            intRes.completionistTime = completionistTime;
+            result[i] = intRes;
+        }
+		
+		
+	}).catch (e=>{
+		console.log(e);
+		result = e;
+	})
+
+	res.json({"metascore":result});
+	}catch (error){
+		console.log(error);
+	res.json({"metascore":"Not Found"});
+
+	}
+	
+
+});
 
 app.get('/getGames/:searchEntry',async function(req,res){
 	let searchEntry = req.params.searchEntry;
@@ -103,7 +198,6 @@ app.get('/metascore/:platform/:gameName', async function(req,res){
 	res.json({"metascore":"Not Found"});
 
 	}
-	
 
 });
 
