@@ -1,7 +1,11 @@
-let express = require('express');
-let hltb = require('howlongtobeat');
+const express = require('express');
+const hltb = require('howlongtobeat');
+const axios = require ('axios');
+const cheerio = require('cheerio');
+
 
 let app = express();
+
 
 let  hltbService = new hltb.HowLongToBeatService();
 
@@ -40,6 +44,68 @@ app.get('/gameDetail/:gameId',async function(req,res){
 		res.json({'result':constructedResponse});
 	}).catch(e => res.send('some error occured'));
 })
+
+app.get('/gameDetail/:platform/:gameName', async function(req,res){
+	try{
+		let platform = req.params.platform;
+	let gameName = req.params.gameName;
+	let URL_R = 'https://www.metacritic.com/game' + '/' + platform + '/' + gameName;
+	console.log(URL_R);
+	let result ;
+
+ await axios(URL_R).then((res)=>{
+		const html = res.data;
+		
+		const $ = cheerio.load(html);
+		const mango = $(".product_summary > span:nth-child(2) > span:nth-child(1) > span:nth-child(2)");
+		const gameDetail = mango.html();
+		result = gameDetail;
+	}).catch (e=>{
+		console.log('e');
+		result = "Not Found";
+	})
+
+	res.json({"game-detail":result});
+
+	}catch (error){
+		console.log('error');
+	res.json({"metascore":"Not Found"});
+
+	}
+	
+
+});
+
+
+app.get('/metascore/:platform/:gameName', async function(req,res){
+	try{
+		let platform = req.params.platform;
+	let gameName = req.params.gameName;
+	let URL_R = 'https://www.metacritic.com/game' + '/' + platform + '/' + gameName;
+	console.log(URL_R);
+	let result ;
+
+ await axios(URL_R).then((res)=>{
+		const html = res.data;
+		
+		const $ = cheerio.load(html);
+		const mango = $(".xlarge > span:nth-child(3)");
+		const gameDetail = mango.html();
+		result = gameDetail;
+	}).catch (e=>{
+		console.log(e);
+		result = "Not Found";
+	})
+
+	res.json({"metascore":result});
+	}catch (error){
+		console.log(error);
+	res.json({"metascore":"Not Found"});
+
+	}
+	
+
+});
 
 app.listen(3000);
 
