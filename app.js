@@ -60,9 +60,7 @@ let  hltbService = new hltb.HowLongToBeatService();
 
 app.get('/popularGames', async function(req,res){
 	try{
-	// let URL_R = 'https://www.metacritic.com/game' + '/' + platform + '/' + gameName;
     const URL_R = 'https://howlongtobeat.com/';
-	// console.log(URL_R);
 	let result =[];
 
  await axios(URL_R).then((res)=>{
@@ -105,8 +103,6 @@ app.get('/popularGames', async function(req,res){
 	res.json({"popularGames":"Not Found"});
 
 	}
-	
-
 });
 
 app.get('/getGames/:searchEntry',async function(req,res){
