@@ -158,7 +158,6 @@ app.get('/gameDetail/:platform/:gameName', async function(req,res){
 		const $ = cheerio.load(html);
 		const mango = $(".product_summary > span:nth-child(2) > span:nth-child(1) > span:nth-child(2)");
 		gameDetail = mango.html();
-		console.log('------------------'+gameDetail);
 		if(gameDetail == null){
 			result = "Not Found";
 		}
