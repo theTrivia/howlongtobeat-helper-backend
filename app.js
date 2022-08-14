@@ -145,19 +145,29 @@ app.get('/gameDetail/:platform/:gameName', async function(req,res){
 	try{
 		let platform = req.params.platform;
 	let gameName = req.params.gameName;
+	console.log(platform);
+	console.log(gameName);
 	let URL_R = 'https://www.metacritic.com/game' + '/' + platform + '/' + gameName;
 	console.log(URL_R);
 	let result ;
 
  await axios(URL_R).then((res)=>{
+		let gameDetail = '';
 		const html = res.data;
 		
 		const $ = cheerio.load(html);
 		const mango = $(".product_summary > span:nth-child(2) > span:nth-child(1) > span:nth-child(2)");
-		const gameDetail = mango.html();
-		result = gameDetail;
+		gameDetail = mango.html();
+		console.log('------------------'+gameDetail);
+		if(gameDetail == null){
+			result = "Not Found";
+		}
+		else{
+			result = gameDetail;
+		}
+
 	}).catch (e=>{
-		console.log('e');
+		console.log(e);
 		result = "Not Found";
 	})
 
